@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Pork Calling</title>
+    <title>John Pork is Calling</title>
     <style>
         body, html {
             margin: 0;
@@ -15,163 +15,149 @@
             font-family: -apple-system, sans-serif;
         }
 
-        #screen {
+        #viewport {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .background-media {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            z-index: 1;
-        }
-
-        /* The UI layer on top of the image */
-        #ui-overlay {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            padding-bottom: 10vh;
-            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4));
-        }
-
-        .button-row {
-            display: flex;
-            gap: 60px;
-            text-align: center;
-            color: white;
-            font-size: 14px;
-        }
-
-        .btn-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .circle-btn {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            border: none;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.1s;
         }
 
-        .circle-btn:active { transform: scale(0.9); }
+        /* Fixed Proportion: contain ensures the whole image is visible without stretching */
+        .main-media {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            z-index: 1;
+        }
 
-        .red { background-color: #ff3b30; }
-        .green { background-color: #4cd964; }
+        #ui-layer {
+            position: absolute;
+            bottom: 10%;
+            width: 100%;
+            z-index: 10;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
 
-        .icon {
+        .btn-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .action-btn {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .decline { background-color: #ff3b30; }
+        .accept { background-color: #4cd964; }
+
+        .icon-svg {
             width: 35px;
             height: 35px;
             fill: white;
         }
+        .decline .icon-svg { transform: rotate(135deg); }
 
-        .decline-icon { transform: rotate(135deg); }
-
-        /* REAL GLASS SHATTER EFFECT */
-        .shattered {
+        /* Glass Shatter Overlay */
+        .glass-shatter {
             position: relative;
-            background: #880000 !important; /* Darker red like it's broken */
-            pointer-events: none;
+            overflow: hidden;
         }
-
-        .shattered::after {
+        .glass-shatter::after {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            /* This creates shard-like lines across the button */
+            background: rgba(255,255,255,0.2);
+            /* Jagged shard lines */
             clip-path: polygon(0% 20%, 30% 0%, 10% 40%, 50% 20%, 30% 60%, 70% 40%, 50% 80%, 90% 60%, 70% 100%, 100% 80%, 80% 40%, 100% 20%);
-            border: 1px solid rgba(255,255,255,0.5);
+            border: 1px solid white;
+            pointer-events: none; /* Allows clicks to go through the shard effect */
         }
-
     </style>
 </head>
 <body>
 
-<div id="screen">
-    <img id="bg-img" class="background-media" src="">
-    <video id="bg-video" class="background-media" style="display:none;" playsinline></video>
+<div id="viewport">
+    <img id="main-img" class="main-media" src="">
+    <video id="main-video" class="main-media" style="display:none;" playsinline preload="auto"></video>
 
-    <div id="ui-overlay">
-        <div class="button-row">
-            <div class="btn-container">
-                <button id="refuse-btn" class="circle-btn red">
-                    <svg class="icon decline-icon" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
-                </button>
-                <span>Decline</span>
-            </div>
-            <div class="btn-container">
-                <button id="accept-btn" class="circle-btn green">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
-                </button>
-                <span>Accept</span>
-            </div>
+    <div id="ui-layer">
+        <div class="btn-box">
+            <button id="btn-refuse" class="action-btn decline">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+            </button>
+            <span>Decline</span>
+        </div>
+        <div class="btn-box">
+            <button id="btn-accept" class="action-btn accept">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+            </button>
+            <span>Accept</span>
         </div>
     </div>
 </div>
 
 <script>
-    const bgImg = document.getElementById('bg-img');
-    const bgVideo = document.getElementById('bg-video');
-    const refuseBtn = document.getElementById('refuse-btn');
-    const acceptBtn = document.getElementById('accept-btn');
-    const ui = document.getElementById('ui-overlay');
+    const imgElement = document.getElementById('main-img');
+    const videoElement = document.getElementById('main-video');
+    const refuseBtn = document.getElementById('btn-refuse');
+    const acceptBtn = document.getElementById('btn-accept');
+    const uiLayer = document.getElementById('ui-layer');
 
-    // These MUST match your filenames in GitHub exactly!
-    const startingImages = [
+    // Filenames - double-check these in your GitHub main folder
+    const introImages = [
         'images (48).jpeg',
         'images (49).jpeg',
         'John_Pork.webp',
         '112371_1684629236_e94e6ef83f89a367cd751895411f6596.webp'
     ];
-    
-    const lastChance = '你的段落文字_20260407_103036_0000.png';
-    const finalWarning = '你的段落文字_20260407_103153_0000.png';
-    const videoFile = 'Monday Left Me Broken - John Pork #shorts - Supreme Troll (720p, h264, youtube).mp4';
+    const chanceImage = '你的段落文字_20260407_103036_0000.png';
+    const failImage = '你的段落文字_20260407_103153_0000.png';
+    const videoUrl = 'Monday Left Me Broken - John Pork #shorts - Supreme Troll (720p, h264, youtube).mp4';
 
-    let clicks = 0;
+    let refuseClicks = 0;
 
-    // Set initial random image
-    bgImg.src = startingImages[Math.floor(Math.random() * startingImages.length)];
+    // Load initial image
+    imgElement.src = introImages[Math.floor(Math.random() * introImages.length)];
 
     acceptBtn.onclick = () => {
-        ui.style.display = 'none';
-        bgImg.style.display = 'none';
-        bgVideo.style.display = 'block';
-        bgVideo.src = videoFile;
-        bgVideo.play();
+        uiLayer.style.display = 'none';
+        imgElement.style.display = 'none';
+        videoElement.style.display = 'block';
+        videoElement.src = videoUrl;
+        videoElement.play().catch(e => {
+            console.log("Auto-play blocked, showing controls.");
+            videoElement.controls = true;
+        });
     };
 
     refuseBtn.onclick = () => {
-        clicks++;
-        if (clicks === 1) {
-            bgImg.src = lastChance;
-            refuseBtn.classList.add('shattered');
+        refuseClicks++;
+        if (refuseClicks === 1) {
+            // First time refusing
+            imgElement.src = chanceImage;
+            refuseBtn.classList.add('glass-shatter');
         } else {
-            bgImg.src = finalWarning;
-            ui.style.display = 'none';
+            // Second time refusing
+            imgElement.src = failImage;
+            uiLayer.style.display = 'none';
         }
     };
 </script>
