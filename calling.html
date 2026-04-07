@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Pork Calling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #image-display {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        #video-display {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button.refuse {
+            background-color: red;
+            color: #fff;
+        }
+
+        .button.accept {
+            background-color: green;
+            color: #fff;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #last-chance-image {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        #final-image {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* Shatter effect */
+        .shatter {
+            animation: shatter 0.5s ease-in-out forwards;
+        }
+
+        @keyframes shatter {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1) rotate(5deg);
+                opacity: 0.8;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                filter: grayscale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <img id="image-display" src="" alt="John Pork Calling">
+    <video id="video-display" controls></video>
+    <img id="last-chance-image" src="https://i.ibb.co/3sS7tX4/lastchance.png" alt="One Last Chance">
+    <img id="final-image" src="https://i.ibb.co/68v8z9k/accepted.png" alt="You Should've Accepted It">
+
+    <div id="button-container">
+        <button id="refuse-btn" class="button refuse">Refuse</button>
+        <button id="accept-btn" class="button accept">Accept</button>
+    </div>
+</div>
+
+<script>
+    const imageDisplay = document.getElementById('image-display');
+    const videoDisplay = document.getElementById('video-display');
+    const lastChanceImage = document.getElementById('last-chance-image');
+    const finalImage = document.getElementById('final-image');
+    const refuseBtn = document.getElementById('refuse-btn');
+    const acceptBtn = document.getElementById('accept-btn');
+    const buttonContainer = document.getElementById('button-container');
+
+    const images = [
+        'https://i.ibb.co/zXp9Tf8/calling1.png',
+        'https://i.ibb.co/Yy25pLp/calling2.png',
+        'https://i.ibb.co/g86Vf5m/calling3.png',
+        'https://i.ibb.co/hH23X3h/calling4.png',
+        'https://i.ibb.co/mHq334C/calling5.png',
+        'https://i.ibb.co/7C96T5V/calling6.png',
+    ];
+
+    const videoSrc = 'https://i.ibb.co/f4R2y5M/jpcalling.mp4';
+
+    let refuseCount = 0;
+
+    function getRandomImage() {
+        const randomIndex = Math.floor(Math.random() * images.length);
+        imageDisplay.src = images[randomIndex];
+    }
+
+    getRandomImage();
+
+    acceptBtn.addEventListener('click', () => {
+        imageDisplay.style.display = 'none';
+        videoDisplay.style.display = 'block';
+        videoDisplay.src = videoSrc;
+        videoDisplay.play();
+        buttonContainer.style.display = 'none';
+    });
+
+    refuseBtn.addEventListener('click', () => {
+        refuseCount++;
+
+        if (refuseCount === 1) {
+            imageDisplay.style.display = 'none';
+            lastChanceImage.style.display = 'block';
+            refuseBtn.classList.add('shatter');
+        } else if (refuseCount === 2) {
+            lastChanceImage.style.display = 'none';
+            finalImage.style.display = 'block';
+            buttonContainer.style.display = 'none';
+        }
+    });
+
+</script>
+
+</body>
+</html>
