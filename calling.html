@@ -3,130 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Pork is Calling</title>
+    <title>John Pork Calling</title>
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
             background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, sans-serif;
         }
 
-        #phone-screen {
+        #screen {
             position: relative;
-            width: 100%;
-            max-width: 450px;
+            width: 100vw;
             height: 100vh;
-            background: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* Main Image Styling */
-        .main-media {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .background-media {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
         }
 
-        /* Video Styling */
-        #video-display {
-            display: none;
-            z-index: 10;
-        }
-
-        /* UI Overlay */
-        #ui-layer {
+        /* The UI layer on top of the image */
+        #ui-overlay {
             position: relative;
-            z-index: 5;
+            z-index: 10;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding-bottom: 80px;
+            align-items: center;
+            padding-bottom: 10vh;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4));
         }
 
-        /* Button Container */
-        #button-container {
+        .button-row {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            padding: 0 40px;
-            box-sizing: border-box;
+            gap: 60px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
         }
 
-        .btn-wrapper {
+        .btn-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: white;
-            font-size: 14px;
-            gap: 10px;
+            gap: 8px;
         }
 
-        /* Circular Button Style like the Image */
-        .call-btn {
-            width: 75px;
-            height: 75px;
+        .circle-btn {
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
             border: none;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             transition: transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        .call-btn:active { transform: scale(0.9); }
+        .circle-btn:active { transform: scale(0.9); }
 
-        .decline { background-color: #ff3b30; }
-        .accept { background-color: #4cd964; }
+        .red { background-color: #ff3b30; }
+        .green { background-color: #4cd964; }
 
-        /* Icon Styling (Using Unicode for phone icons) */
         .icon {
-            color: white;
-            font-size: 35px;
-            transform: rotate(135deg); /* Flips the handset for decline */
+            width: 35px;
+            height: 35px;
+            fill: white;
         }
-        .accept .icon { transform: rotate(0deg); }
 
-        /* Glass Shatter Effect */
-        .shatter-effect {
-            filter: contrast(1.5) brightness(0.8);
-            background-image: url('https://www.transparenttextures.com/patterns/glass-shattered.png');
+        .decline-icon { transform: rotate(135deg); }
+
+        /* REAL GLASS SHATTER EFFECT */
+        .shattered {
+            position: relative;
+            background: #880000 !important; /* Darker red like it's broken */
             pointer-events: none;
-            opacity: 0.8;
         }
+
+        .shattered::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            /* This creates shard-like lines across the button */
+            clip-path: polygon(0% 20%, 30% 0%, 10% 40%, 50% 20%, 30% 60%, 70% 40%, 50% 80%, 90% 60%, 70% 100%, 100% 80%, 80% 40%, 100% 20%);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
     </style>
 </head>
 <body>
 
-<div id="phone-screen">
-    <img id="display-img" class="main-media" src="">
-    <video id="video-display" class="main-media" playsinline></video>
+<div id="screen">
+    <img id="bg-img" class="background-media" src="">
+    <video id="bg-video" class="background-media" style="display:none;" playsinline></video>
 
-    <div id="ui-layer">
-        <div id="button-container">
-            <div class="btn-wrapper" id="decline-wrap">
-                <button id="decline-btn" class="call-btn decline">
-                    <span class="icon">📞</span>
+    <div id="ui-overlay">
+        <div class="button-row">
+            <div class="btn-container">
+                <button id="refuse-btn" class="circle-btn red">
+                    <svg class="icon decline-icon" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
                 </button>
                 <span>Decline</span>
             </div>
-            <div class="btn-wrapper" id="accept-wrap">
-                <button id="accept-btn" class="call-btn accept">
-                    <span class="icon">📞</span>
+            <div class="btn-container">
+                <button id="accept-btn" class="circle-btn green">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
                 </button>
                 <span>Accept</span>
             </div>
@@ -135,49 +133,47 @@
 </div>
 
 <script>
-    const displayImg = document.getElementById('display-img');
-    const videoDisplay = document.getElementById('video-display');
-    const declineBtn = document.getElementById('decline-btn');
+    const bgImg = document.getElementById('bg-img');
+    const bgVideo = document.getElementById('bg-video');
+    const refuseBtn = document.getElementById('refuse-btn');
     const acceptBtn = document.getElementById('accept-btn');
-    const uiLayer = document.getElementById('ui-layer');
+    const ui = document.getElementById('ui-overlay');
 
-    // Make sure these filenames match exactly what is in your GitHub Repo!
-    const callingImages = [
+    // These MUST match your filenames in GitHub exactly!
+    const startingImages = [
         'images (48).jpeg',
         'images (49).jpeg',
         'John_Pork.webp',
         '112371_1684629236_e94e6ef83f89a367cd751895411f6596.webp'
     ];
     
-    const lastChanceImg = '你的段落文字_20260407_103036_0000.png';
-    const finalImg = '你的段落文字_20260407_103153_0000.png';
-    const mainVideo = 'Monday Left Me Broken - John Pork #shorts - Supreme Troll (720p, h264, youtube).mp4';
+    const lastChance = '你的段落文字_20260407_103036_0000.png';
+    const finalWarning = '你的段落文字_20260407_103153_0000.png';
+    const videoFile = 'Monday Left Me Broken - John Pork #shorts - Supreme Troll (720p, h264, youtube).mp4';
 
-    let strikes = 0;
+    let clicks = 0;
 
-    // Randomly pick initial image
-    displayImg.src = callingImages[Math.floor(Math.random() * callingImages.length)];
+    // Set initial random image
+    bgImg.src = startingImages[Math.floor(Math.random() * startingImages.length)];
 
-    // Accept Action
-    acceptBtn.addEventListener('click', () => {
-        uiLayer.style.display = 'none';
-        displayImg.style.display = 'none';
-        videoDisplay.style.display = 'block';
-        videoDisplay.src = mainVideo;
-        videoDisplay.play();
-    });
+    acceptBtn.onclick = () => {
+        ui.style.display = 'none';
+        bgImg.style.display = 'none';
+        bgVideo.style.display = 'block';
+        bgVideo.src = videoFile;
+        bgVideo.play();
+    };
 
-    // Decline Action
-    declineBtn.addEventListener('click', () => {
-        strikes++;
-        if (strikes === 1) {
-            displayImg.src = lastChanceImg;
-            declineBtn.classList.add('shatter-effect');
+    refuseBtn.onclick = () => {
+        clicks++;
+        if (clicks === 1) {
+            bgImg.src = lastChance;
+            refuseBtn.classList.add('shattered');
         } else {
-            displayImg.src = finalImg;
-            uiLayer.style.display = 'none';
+            bgImg.src = finalWarning;
+            ui.style.display = 'none';
         }
-    });
+    };
 </script>
 
 </body>
