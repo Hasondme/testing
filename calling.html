@@ -10,95 +10,76 @@
             width: 100%; height: 100%;
             background-color: #000;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, sans-serif;
         }
 
         #container {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* 'contain' keeps the whole image visible without stretching */
-        .media-layer {
+        .media {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            width: 100%; height: 100%;
+            object-fit: contain; /* Fixes proportion issues */
             z-index: 1;
         }
 
-        #ui-overlay {
+        #ui {
             position: absolute;
-            bottom: 10%;
-            width: 100%;
+            bottom: 10%; width: 100%;
             z-index: 10;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
+            display: flex; justify-content: space-evenly;
         }
 
-        .btn-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: white;
-            font-size: 14px;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+        .btn-container {
+            display: flex; flex-direction: column; align-items: center;
+            color: white; font-size: 13px;
         }
 
-        .button {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: transform 0.1s;
-            position: relative; /* Keep it above the effect */
+        .btn {
+            width: 72px; height: 72px;
+            border-radius: 50%; border: none;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 8px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            position: relative;
         }
 
-        .button:active { transform: scale(0.95); }
         .red { background-color: #ff3b30; }
         .green { background-color: #4cd964; }
 
-        .icon { width: 35px; height: 35px; fill: white; }
+        .icon { width: 32px; height: 32px; fill: white; }
         .decline-icon { transform: rotate(135deg); }
 
-        /* GLASS SHATTER EFFECT (Pseudo-element so it doesn't block clicks) */
-        .shatter-visual::after {
+        /* GLASS SHATTER EFFECT */
+        .shattered::after {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             border: 1px solid white;
-            clip-path: polygon(0% 20%, 30% 0%, 10% 40%, 50% 20%, 30% 60%, 70% 40%, 50% 80%, 90% 60%, 70% 100%, 100% 80%, 80% 40%, 100% 20%);
-            pointer-events: none; /* ESSENTIAL: Allows clicking THROUGH the effect */
+            clip-path: polygon(0% 20%, 35% 0%, 15% 45%, 55% 25%, 35% 65%, 75% 45%, 55% 85%, 95% 65%, 75% 100%, 100% 85%, 85% 45%, 100% 25%);
+            pointer-events: none; /* IMPORTANT: Allows 2nd click to go through to the button */
         }
     </style>
 </head>
 <body>
 
 <div id="container">
-    <img id="main-img" class="media-layer" src="">
-    <video id="main-video" class="media-layer" style="display:none;" playsinline preload="auto"></video>
+    <img id="bg-img" class="media" src="">
+    <video id="bg-vid" class="media" style="display:none;" playsinline></video>
 
-    <div id="ui-overlay">
-        <div class="btn-wrap">
-            <button id="decline-btn" class="button red">
+    <div id="ui">
+        <div class="btn-container">
+            <button id="refuse" class="btn red">
                 <svg class="icon decline-icon" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
             </button>
             <span>Decline</span>
         </div>
-        <div class="btn-wrap">
-            <button id="accept-btn" class="button green">
+        <div class="btn-container">
+            <button id="accept" class="btn green">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
             </button>
             <span>Accept</span>
@@ -107,46 +88,41 @@
 </div>
 
 <script>
-    const img = document.getElementById('main-img');
-    const vid = document.getElementById('main-video');
-    const decline = document.getElementById('decline-btn');
-    const accept = document.getElementById('accept-btn');
-    const ui = document.getElementById('ui-overlay');
+    const imgElement = document.getElementById('bg-img');
+    const vidElement = document.getElementById('bg-vid');
+    const refuseBtn = document.getElementById('refuse');
+    const acceptBtn = document.getElementById('accept');
+    const uiLayer = document.getElementById('ui');
 
-    // Use simple names to avoid GitHub link breakage
-    const startImgs = ['John_Pork.webp', 'images (48).jpeg', 'images (49).jpeg'];
-    const midPath = 'chance.png';
-    const endPath = 'end.png';
-    const vidPath = 'video.mp4';
+    // Filenames updated based on your screenshot
+    const startImages = ['Calling1.webp', 'Calling2.webp', 'Calling3.jpeg', 'Calling4.jpeg'];
+    const chanceImage = 'Final1.png';
+    const deadImage = 'Final2.png';
+    const mainVideo = 'Video.mp4';
 
-    let clicks = 0;
+    let refuseCount = 0;
 
-    // Load random start image
-    img.src = startImgs[Math.floor(Math.random() * startImgs.length)];
+    // Pick random start image
+    imgElement.src = startImages[Math.floor(Math.random() * startImages.length)];
 
-    accept.onclick = () => {
-        ui.style.display = 'none';
-        img.style.display = 'none';
-        vid.style.display = 'block';
-        vid.src = vidPath;
-        vid.load();
-        
-        // Mobile browsers often need a user-click to play video with sound
-        vid.play().catch(() => {
-            console.log("Autoplay failed - showing controls");
-            vid.controls = true;
+    acceptBtn.onclick = () => {
+        uiLayer.style.display = 'none';
+        imgElement.style.display = 'none';
+        vidElement.style.display = 'block';
+        vidElement.src = mainVideo;
+        vidElement.play().catch(() => {
+            vidElement.controls = true; // Fallback if autoplay is blocked
         });
     };
 
-    decline.onclick = () => {
-        clicks++;
-        if (clicks === 1) {
-            img.src = midPath;
-            decline.classList.add('shatter-visual');
-            // The button is NOT hidden here, so it remains clickable
+    refuseBtn.onclick = () => {
+        refuseCount++;
+        if (refuseCount === 1) {
+            imgElement.src = chanceImage;
+            refuseBtn.classList.add('shattered');
         } else {
-            img.src = endPath;
-            ui.style.display = 'none';
+            imgElement.src = deadImage;
+            uiLayer.style.display = 'none';
         }
     };
 </script>
