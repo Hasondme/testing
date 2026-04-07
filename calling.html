@@ -3,172 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Pork Calling</title>
+    <title>John Pork is Calling</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        #container {
-            text-align: center;
-            max-width: 600px;
+        #phone-screen {
+            position: relative;
             width: 100%;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        #image-display {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        /* Main Image Styling */
+        .main-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
+        /* Video Styling */
         #video-display {
             display: none;
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            z-index: 10;
         }
 
+        /* UI Overlay */
+        #ui-layer {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 80px;
+        }
+
+        /* Button Container */
         #button-container {
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            justify-content: space-around;
+            width: 100%;
+            padding: 0 40px;
+            box-sizing: border-box;
         }
 
-        .button {
-            padding: 10px 20px;
-            font-size: 16px;
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            gap: 10px;
+        }
+
+        /* Circular Button Style like the Image */
+        .call-btn {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
             border: none;
-            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        .button.refuse {
-            background-color: red;
-            color: #fff;
-        }
+        .call-btn:active { transform: scale(0.9); }
 
-        .button.accept {
-            background-color: green;
-            color: #fff;
-        }
+        .decline { background-color: #ff3b30; }
+        .accept { background-color: #4cd964; }
 
-        .button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        /* Icon Styling (Using Unicode for phone icons) */
+        .icon {
+            color: white;
+            font-size: 35px;
+            transform: rotate(135deg); /* Flips the handset for decline */
         }
+        .accept .icon { transform: rotate(0deg); }
 
-        #last-chance-image {
-            display: none;
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        #final-image {
-            display: none;
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* Shatter effect */
-        .shatter {
-            animation: shatter 0.5s ease-in-out forwards;
-        }
-
-        @keyframes shatter {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.1) rotate(5deg);
-                opacity: 0.8;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-                filter: grayscale(1);
-            }
+        /* Glass Shatter Effect */
+        .shatter-effect {
+            filter: contrast(1.5) brightness(0.8);
+            background-image: url('https://www.transparenttextures.com/patterns/glass-shattered.png');
+            pointer-events: none;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
 
-<div id="container">
-    <img id="image-display" src="" alt="John Pork Calling">
-    <video id="video-display" controls></video>
-    <img id="last-chance-image" src="https://i.ibb.co/3sS7tX4/lastchance.png" alt="One Last Chance">
-    <img id="final-image" src="https://i.ibb.co/68v8z9k/accepted.png" alt="You Should've Accepted It">
+<div id="phone-screen">
+    <img id="display-img" class="main-media" src="">
+    <video id="video-display" class="main-media" playsinline></video>
 
-    <div id="button-container">
-        <button id="refuse-btn" class="button refuse">Refuse</button>
-        <button id="accept-btn" class="button accept">Accept</button>
+    <div id="ui-layer">
+        <div id="button-container">
+            <div class="btn-wrapper" id="decline-wrap">
+                <button id="decline-btn" class="call-btn decline">
+                    <span class="icon">📞</span>
+                </button>
+                <span>Decline</span>
+            </div>
+            <div class="btn-wrapper" id="accept-wrap">
+                <button id="accept-btn" class="call-btn accept">
+                    <span class="icon">📞</span>
+                </button>
+                <span>Accept</span>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    const imageDisplay = document.getElementById('image-display');
+    const displayImg = document.getElementById('display-img');
     const videoDisplay = document.getElementById('video-display');
-    const lastChanceImage = document.getElementById('last-chance-image');
-    const finalImage = document.getElementById('final-image');
-    const refuseBtn = document.getElementById('refuse-btn');
+    const declineBtn = document.getElementById('decline-btn');
     const acceptBtn = document.getElementById('accept-btn');
-    const buttonContainer = document.getElementById('button-container');
+    const uiLayer = document.getElementById('ui-layer');
 
-    const images = [
-        'https://i.ibb.co/zXp9Tf8/calling1.png',
-        'https://i.ibb.co/Yy25pLp/calling2.png',
-        'https://i.ibb.co/g86Vf5m/calling3.png',
-        'https://i.ibb.co/hH23X3h/calling4.png',
-        'https://i.ibb.co/mHq334C/calling5.png',
-        'https://i.ibb.co/7C96T5V/calling6.png',
+    // Make sure these filenames match exactly what is in your GitHub Repo!
+    const callingImages = [
+        'images (48).jpeg',
+        'images (49).jpeg',
+        'John_Pork.webp',
+        '112371_1684629236_e94e6ef83f89a367cd751895411f6596.webp'
     ];
+    
+    const lastChanceImg = '你的段落文字_20260407_103036_0000.png';
+    const finalImg = '你的段落文字_20260407_103153_0000.png';
+    const mainVideo = 'Monday Left Me Broken - John Pork #shorts - Supreme Troll (720p, h264, youtube).mp4';
 
-    const videoSrc = 'https://i.ibb.co/f4R2y5M/jpcalling.mp4';
+    let strikes = 0;
 
-    let refuseCount = 0;
+    // Randomly pick initial image
+    displayImg.src = callingImages[Math.floor(Math.random() * callingImages.length)];
 
-    function getRandomImage() {
-        const randomIndex = Math.floor(Math.random() * images.length);
-        imageDisplay.src = images[randomIndex];
-    }
-
-    getRandomImage();
-
+    // Accept Action
     acceptBtn.addEventListener('click', () => {
-        imageDisplay.style.display = 'none';
+        uiLayer.style.display = 'none';
+        displayImg.style.display = 'none';
         videoDisplay.style.display = 'block';
-        videoDisplay.src = videoSrc;
+        videoDisplay.src = mainVideo;
         videoDisplay.play();
-        buttonContainer.style.display = 'none';
     });
 
-    refuseBtn.addEventListener('click', () => {
-        refuseCount++;
-
-        if (refuseCount === 1) {
-            imageDisplay.style.display = 'none';
-            lastChanceImage.style.display = 'block';
-            refuseBtn.classList.add('shatter');
-        } else if (refuseCount === 2) {
-            lastChanceImage.style.display = 'none';
-            finalImage.style.display = 'block';
-            buttonContainer.style.display = 'none';
+    // Decline Action
+    declineBtn.addEventListener('click', () => {
+        strikes++;
+        if (strikes === 1) {
+            displayImg.src = lastChanceImg;
+            declineBtn.classList.add('shatter-effect');
+        } else {
+            displayImg.src = finalImg;
+            uiLayer.style.display = 'none';
         }
     });
-
 </script>
 
 </body>
