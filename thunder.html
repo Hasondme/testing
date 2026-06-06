@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Thunder distance calculator</title>
+        
         <style>
+            body{
+                background-color: antiquewhite;
+                font-family: Arial, Helvetica, sans-serif;
+            }
             #distance{
                 font-weight: bold;
             }
@@ -14,7 +21,16 @@
     <body>
         <h1>Wonder how far that lightning was?</h1>
         <h2>Time how long it takes between when you saw the lightning and when you hear the thunder!</h2>
-        <input type="text" id="data">
-        <input type="submit" id="submit">
+            <input type="text" id="data">
+            <input type="button" onclick="calcDist">
+            <p>
+                The distance between you and the thunder is
+            </p>
+            <p id="result">...</p>
+        <script>
+            function calcDist() {
+
+            }
+        </script>
     </body>
 </html>
