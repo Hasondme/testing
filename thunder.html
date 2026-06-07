@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Thunder distance calculator</title>
-        
         <style>
             body{
                 background-color: rgb(250, 235, 215);
@@ -20,16 +19,15 @@
         <h2>Time how long it takes between when you saw the lightning and when you hear the thunder!</h2>
             <input type="number" id="data" min="0" oninput="this.value = Math.abs(this.value)"><br>
             <input type="button" onclick="calcDist()" style="width: fit-content;" value="Calculate!"></button>
-            <p>
-                The distance between you and the thunder is
-            <p id="result">...</p>
+            <div>
+                <p>The distance between you and the thunder is <span id="result">...</span></p>
+            </div>
         <script>
             function calcDist() {
                 const inputtime = document.getElementById('data');
                 const valuetime = parseFloat(inputtime.value);
                 const dist = valuetime * 343 * 299792458 / (299792458 - 343);
-                document.getElementById('result').innerHTML = dist;
-
+                document.getElementById('result').innerHTML = dist + " metres";
             }
         </script>
     </body>
